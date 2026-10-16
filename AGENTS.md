@@ -2,30 +2,50 @@
 
 ## 技术栈
 
-- **核心**: Vite 7, TypeScript, Express
-- **UI**: Tailwind CSS
+- **核心**: Vite 7, TypeScript 5, React 19, Express
+- **3D**: Three.js + @react-three/fiber 9 + @react-three/drei 10，地形噪声 simplex-noise
+- **UI**: Tailwind CSS 3（设计令牌见 `src/ui/tokens.css`，设计规范见 `DESIGN.md`）
+
+## 项目概览：永夜战区
+
+3D 上帝视角大战略防守游戏。超大随机地形 → 区域规划 → 建筑部署 → 昼夜循环与多方向诡物进攻，分阶段开发。
 
 ## 目录结构
 
 ```
-├── scripts/            # 构建与启动脚本
-│   ├── build.sh        # 构建脚本
-│   ├── dev.sh          # 开发环境启动脚本
-│   ├── prepare.sh      # 预处理脚本
-│   └── start.sh        # 生产环境启动脚本
-├── server/             # 服务端逻辑
-│   ├── routes/         # API 路由
-│   ├── server.ts       # Express 服务入口
-│   └── vite.ts         # Vite 中间件集成
-├── src/                # 前端源码
-│   ├── index.css       # 全局样式
-│   ├── index.ts        # 客户端入口
-│   └── main.ts         # 主逻辑
-├── index.html          # 入口 HTML
-├── package.json        # 项目依赖管理
-├── tsconfig.json       # TypeScript 配置
-└── vite.config.ts      # Vite 配置
+├── scripts/                  # 构建与启动脚本（dev/build/start 由 .coze 调用，勿手改）
+├── server/                   # Express 服务（集成 Vite 中间件）
+│   ├── routes/               # API 路由
+│   ├── server.ts             # 服务入口
+│   └── vite.ts               # Vite dev 中间件 / 生产静态托管
+├── shared/
+│   └── types.ts              # 前后端共享类型（区域/地形/昼夜枚举）
+├── src/
+│   ├── main.tsx              # React 入口
+│   ├── App.tsx               # 页面根（GameScene + Hud）
+│   ├── index.css             # Tailwind + 全局基础样式
+│   ├── ui/tokens.css         # 全局 CSS 变量（色彩/字体/圆角/间距/动效）
+│   ├── components/
+│   │   ├── GameScene.tsx     # R3F Canvas、相机、雾光、星点
+│   │   ├── Hud.tsx           # HUD 总装
+│   │   └── hud/              # TopBar/LeftPanel/RightPanel/BottomBar/Minimap
+│   └── game/
+│       ├── cameraBus.ts      # HUD→3D 相机指令（聚焦/复位/全局）
+│       ├── terrain/          # 地形：heightfield.ts(生成) / Terrain.tsx(呈现) / Trees.tsx
+│       ├── buildings/        # 建筑系统（阶段二）
+│       ├── enemies/          # 诡物与波次（阶段三）
+│       └── regions/          # 区域规划（阶段一）
+├── index.html                # 入口 HTML（加载 /src/main.tsx）
+├── vite.config.ts            # Vite + @vitejs/plugin-react
+└── tsconfig.json             # TS 配置（jsx: react-jsx, strict）
 ```
+
+## 常用命令
+
+- 开发：`pnpm run dev`（Express + Vite，端口由 `DEPLOY_RUN_PORT` 注入，默认 5000）
+- 构建：`pnpm run build`（vite build + tsup 打包 server）
+- 类型检查：`pnpm ts-check`；Lint：`pnpm lint:build`；样式：`pnpm lint:style`
+- 3D 性能约定：大面积同类物体（树、诡物、箭矢）用 InstancedMesh/对象池，避免逐物体 Mesh。
 
 ## 包管理规范
 

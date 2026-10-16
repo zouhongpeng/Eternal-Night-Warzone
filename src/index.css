@@ -1,21 +1,49 @@
+@import './ui/tokens.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+html,
+body,
+#app {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: var(--yn-abyss);
+  color: var(--yn-snow);
+  font-family: var(--yn-font-ui);
+  -webkit-font-smoothing: antialiased;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* 面板基础质感：暗岩灰半透明 + 冷灰描边 + 背景模糊 */
+.yn-panel {
+  background: var(--yn-panel-bg);
+  border: var(--yn-border);
+  border-radius: var(--yn-radius-panel);
+  backdrop-filter: var(--yn-panel-blur);
+}
+
+/* 数据标签：11px 等宽 大字间距 大写 */
+.yn-label {
+  font-family: var(--yn-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(232, 237, 245, 0.55);
+}
+
+.yn-num {
+  font-family: var(--yn-font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+canvas {
+  display: block;
+  touch-action: none;
 }
